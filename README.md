@@ -1,5 +1,7 @@
 ### Sheetfu Table Class
 
+
+
 A Table object gives us the capability to treat a spreadsheet in a more ORM-like syntax in the Google Apps script environment.
 Let's see an example in an app script context, using a "people" sheet as below:
  
@@ -18,7 +20,9 @@ function tableClassQuickstart() {
     var sheet = ss.getSheetByName("people");
     var gridRange = sheet.getDataRange();
     
-    var table = new Table(gridRange);        // we put the range of the whole sheet but work with smaller range too.
+    
+     // we put the range of the whole sheet but work with smaller range too.
+    var table = new Table(gridRange);       
     
     // Let's search for the person named Philippe
     var philippe = table.select({"first_name": "Philippe"}).first();
@@ -28,9 +32,14 @@ function tableClassQuickstart() {
     var age = philippe.getFieldValue("age");  // 36
     
     // More importantly, we can set values, colors, notes.
-    philippe.setFieldNote("age", "His birthday is coming soon");  // This will add the note on the "age" field.
-    philippe.setFieldValue("age", 37);          // This will set the new "age" value.
-    philippe.setFieldBackground("age", "red");  // This will turn the cell "age" into red.
+    // This will add the note on the "age" field.
+    philippe.setFieldNote("age", "His birthday is coming soon");  
+    
+    // This will set the new "age" value.
+    philippe.setFieldValue("age", 37); 
+    
+    // This will turn the cell "age" into red.
+    philippe.setFieldBackground("age", "red");  
 
     // VERY IMPORTANT STEP
     // When you set values, background or anything, you need to commit your data, otherwise nothing will be updated.
@@ -72,9 +81,12 @@ function loopThroughItems() {
     
     for (var i = 0; i < table.items.length; i ++) {
         var item = table.items[i];
-        Logger.log(item.getFieldValue("first_name"))    // This will print in gas console the first name of everyone in the Table.
+        // This will print in gas console the first name of everyone in the Table.
+        Logger.log(item.getFieldValue("first_name"))    
     }
-    table.commit()       // You can commit the whole table instead of committing per item too
+    
+    // You can commit the whole table instead of committing per item too
+    table.commit()
 }
 
 ```
@@ -105,7 +117,7 @@ Some comments/caveats:
 
 
 
-##Installation
+### Installation
 
 
 You can use this code in 2 ways:
