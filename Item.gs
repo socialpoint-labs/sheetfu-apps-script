@@ -126,6 +126,22 @@ Item.prototype.commitField = function (field) {
 };
 
 
+/**
+ * Commit a single item field value in spreadsheet if the items order has not been changed since instantiating the grid.
+ * @param {String} field: the field of the item to commit the value from, in spreadsheet.
+ */
+Item.prototype.commitFieldValue = function (field) {
+  if (!(this.authorizedToCommit)) {
+    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
+  }
+  var cellRange = this.getFieldRange(field);
+  if (this.getFieldFormula(field) === "") {
+    cellRange.setValue(this.getFieldValue(field));
+  } else {
+    cellRange.setValue(this.getFieldFormula(field));
+  }
+};
+
 
 /**
  * Get the line range of the item in the spreadsheet it is from.
