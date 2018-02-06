@@ -87,6 +87,17 @@ Table.prototype.commit = function() {
 
 
 /**
+ * Method to commit the items values into the associated sheet (regardless if number of items have changed).
+ */
+Table.prototype.commitValues = function() {
+  var values = this.getGridValues();
+  var itemsRange = this.getItemsRange();
+  this.resetGrid();
+  itemsRange.setValues(values)
+};
+
+
+/**
  * Method to get the new Range for the items, based on lenght of Table.items.
  */
 Table.prototype.getItemsRange = function() {
@@ -134,6 +145,30 @@ Table.prototype.getGridData = function() {
     fontColors.push(rowFontColors)
   }
   return {"values": values, "notes": notes, "backgrounds": backgrounds, "wraps": wraps, "fonts": fontColors}
+};
+
+
+/**
+ * Method to create 2D array of the values of every grid items.
+ * @return {Array[]} The values 2D array.
+ */
+Table.prototype.getGridValues = function() {
+  var values = [];
+
+  for (var i = 0; i < this.items.length; i++) {
+    var rowValues = [];
+    var item = this.items[i];
+
+    for (var j = 0; j < this.header.length; j++) {
+      var field = this.header[j];
+      var value = item.getFieldValue(field);
+      var formula = item.getFieldFormula(field);
+
+      (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+    }
+    values.push(rowValues);
+  }
+  return values
 };
 
 

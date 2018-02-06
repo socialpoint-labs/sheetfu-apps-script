@@ -69,6 +69,42 @@ Item.prototype.commit = function () {
 
 
 /**
+ * Commit a whole item values. Disregarded other dimensions.
+ */
+Item.prototype.commitValues = function () {
+  if (!(this.authorizedToCommit)) {
+    throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
+  }
+
+  var rowValues = [];
+
+  for (var j = 0; j < this.header.length; j++) {
+    var field = this.header[j];
+    var value = this.getFieldValue(field);
+    var formula = this.getFieldFormula(field);
+
+    (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+  }
+
+  var lineRange = this.getLineRange();
+  lineRange.setValues([rowValues]);
+};
+
+
+/**
+ * Commit a whole item values. Disregarded other dimensions.
+ */
+Item.prototype.commitDimensions = function () {
+  if (!(this.authorizedToCommit)) {
+    throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
+  }
+
+
+};
+
+
+
+/**
  * Commit a single item field in spreadsheet if the items order has not been changed since instantiating the grid.
  * @param {String} field: the field of the item to commit in spreadsheet.
  */
@@ -123,7 +159,13 @@ Item.prototype.getFieldRange = function (field) {
  * @param {String} field: The name of the field.
  */
 Item.prototype.getFieldValue = function(field) {
-  return this.fields[field]["value"]
+  try {
+    var value = this.fields[field]["value"];
+  } catch(e) {
+    var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
+    throw error
+  }
+  return value
 };
 
 
