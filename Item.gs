@@ -123,7 +123,13 @@ Item.prototype.getFieldRange = function (field) {
  * @param {String} field: The name of the field.
  */
 Item.prototype.getFieldValue = function(field) {
-  return this.fields[field]["value"]
+  try {
+    var value = this.fields[field]["value"];
+  } catch(e) {
+    var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
+    throw error
+  }
+  return value
 };
 
 
