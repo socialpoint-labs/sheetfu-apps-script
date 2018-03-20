@@ -2,30 +2,39 @@
  * Function to create a Table Object for a whole sheet
  * @param {string} sheetName: Name of the sheet to create a Table from
  * @param {number} headerRow: Row number where the header is.
+ * @param {String} indexField: Field name you want to create an index with (commonly for ID field for fast lookup).
  * @returns {Table}
  */
-function getTable(sheetName, headerRow) {
+function getTable(sheetName, headerRow, indexField) {
   if (typeof headerRow === undefined) {
     headerRow = 1;
   }
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   var numberOfRows = sheet.getLastRow() - headerRow + 1;
   var tableRange = sheet.getRange(headerRow, 1, numberOfRows, sheet.getLastColumn());
-
-  return new Table(tableRange);
+  if (indexField === undefined) {
+    return new Table(tableRange);
+  } else {
+    return new Table(tableRange, indexField);
+  }
 }
 
 
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
  * identifiable (no id). Use Table Class for DB-like queries instead (when unique id exist for each row).
  * @param {Range} gridRange: a range object from Google spreadsheet. First row of range must be the headers.
+ * @param {String} indexField: Field name you want to create an index with (commonly for ID field for fast lookup).
  * @constructor
  */
-function Table(gridRange) {
+function Table(gridRange, indexField) {
 
   this.gridRange = gridRange;
   this.header = this.getHeader();
   this.items = this.initiateItems();
+
+  if (indexField !== undefined) {
+    this.index = this.getIndex(indexField)
+  }
 }
 
 
@@ -35,6 +44,20 @@ function Table(gridRange) {
  */
 Table.prototype.getHeader = function () {
   return this.gridRange.getValues()[0];
+};
+
+
+/**
+ * Method to create an index as a hash table for a given field. Make sure the field guarantees unique values. Perfect for IDs.
+ * @return {Object} Hash table in the format {fieldIndex : TableItem}
+ */
+Table.prototype.getIndex = function (indexField) {
+  var index = {};
+  for (var i = 0; i < this.items.length; i++) {
+    var key = this.items[i].getFieldValue(indexField);
+    index[key] = this.items[i]
+  }
+  return index
 };
 
 
@@ -328,6 +351,11 @@ Table.prototype.setItemBackground = function (item, color) {
 Table.prototype.clearBackgrounds = function () {
   var itemRange = this.getItemsRange();
   return itemRange.clearFormat()
+};
+
+
+Table.prototype.getItemById = function (itemId) {
+  return this.index[itemId]
 };
 
 
