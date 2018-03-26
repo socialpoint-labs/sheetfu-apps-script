@@ -1,2 +1,30 @@
-.idea/
+# OSX
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# SublimeText
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+
+# Pycharm
+.idea
+
+# Vim
+*~
+*.swp
+*.swo
+tags
+.ackrc
+
+# asdf
+.tool-versions
+
+# Ag Rg
+.ignore
