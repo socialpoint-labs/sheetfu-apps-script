@@ -12,11 +12,22 @@ function getTable(sheetName, headerRow, indexField) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   var numberOfRows = sheet.getLastRow() - headerRow + 1;
   var tableRange = sheet.getRange(headerRow, 1, numberOfRows, sheet.getLastColumn());
-  if (indexField === undefined) {
-    return new Table(tableRange);
-  } else {
-    return new Table(tableRange, indexField);
-  }
+  return new Table(tableRange, indexField);
+}
+
+
+/**
+ * Function to create a Table Object from a Named Range. The range should contain a header in the first row.
+ * Named ranges are ranges that have associated string aliases.
+ * They can be viewed and edited via the Sheets UI under the Data > Named ranges... menu.
+ * @param {string} namedRange: Name of the range to create a Table from
+ * @param {String} indexField: Field name you want to create an index with (commonly for ID field for fast lookup).
+ * @returns {Table}
+ */
+function getTableByName(namedRange, indexField) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var tableRange = ss.getRangeByName(namedRange);
+  return new Table(tableRange, indexField);
 }
 
 
@@ -354,6 +365,9 @@ Table.prototype.clearBackgrounds = function () {
 };
 
 
+/**
+ * Get an item from the table by its ID (assuming an index field was given when creating the table).
+ */
 Table.prototype.getItemById = function (itemId) {
   return this.index[itemId]
 };
