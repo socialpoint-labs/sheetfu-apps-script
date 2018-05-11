@@ -92,16 +92,21 @@ Item.prototype.commitValues = function () {
 
 
 /**
- * Commit a whole item values. Disregarded other dimensions.
+ * Commit a whole item backgrounds. Disregarded other dimensions.
  */
-Item.prototype.commitDimensions = function () {
+Item.prototype.commitBackgrounds = function () {
   if (!(this.authorizedToCommit)) {
     throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
   }
-
-
+  var rowBackgrounds = [];
+  for (var j = 0; j < this.header.length; j++) {
+    var field = this.header[j];
+    var background = this.getFieldBackground(field);
+    rowBackgrounds.push(background)
+  }
+  var lineRange = this.getLineRange();
+  lineRange.setBackgrounds([rowBackgrounds]);
 };
-
 
 
 /**
@@ -234,6 +239,18 @@ Item.prototype.setFieldBackground = function(field, background) {
 
 
 /**
+ * Method to set background on the whole item.
+ * @param {String} color: The name or hex of the color.
+ */
+Item.prototype.setBackground = function(color) {
+  for (var i = 0; i < this.header.length; i++) {
+    var field = this.header[i];
+    this.fields[field]["background"] = color
+  }
+};
+
+
+/**
  * Method to get formula for a given field.
  * @param {String} field: The name of the field.
  */
@@ -259,6 +276,7 @@ Item.prototype.getFieldFontColor = function(field) {
   return this.fields[field]["font"]
 };
 
+
 /**
  * Method to set font color for a given field.
  * @param {String} field: The name of the field.
@@ -266,5 +284,16 @@ Item.prototype.getFieldFontColor = function(field) {
  */
 Item.prototype.setFieldFontColor = function(field, fontColor) {
   this.fields[field]["font"] = fontColor
+};
+
+
+/**
+ * Method to get the cell range for a specific field.
+ * @param {String} field: The name of the field.
+ * @return {Range} the cell range of the field.
+ */
+Item.prototype.getFieldRange = function(field) {
+  var fieldIndex = this.header.indexOf(field);
+  return this.getLineRange().getCell(1, fieldIndex + 1)
 };
 
