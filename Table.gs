@@ -43,7 +43,8 @@ function Table(gridRange, indexField) {
   this.header = this.getHeader();
   this.items = this.initiateItems();
 
-  if (indexField !== undefined) {
+  this.indexField = indexField;
+  if (this.indexField !== undefined) {
     this.index = this.getIndex(indexField)
   }
 }
@@ -284,7 +285,7 @@ Table.prototype.getHeaderRange = function() {
 
 
 /**
- * Method to add a new item into the Table.
+ * Method to add a new item into the Table. Add the item also to index if there is an index.
  * @param {object} raw_item: an object item containing only values. Field must be matching header values.
  */
 Table.prototype.add = function(raw_item) {
@@ -298,6 +299,10 @@ Table.prototype.add = function(raw_item) {
     newItem.addField(field=label, value=raw_item[label])
   }
   this.items.push(newItem);
+  if (this.index !== undefined) {
+    var indexId = newItem.getFieldValue(this.indexField);
+    this.index[indexId] = newItem
+  }
   return newItem
 };
 

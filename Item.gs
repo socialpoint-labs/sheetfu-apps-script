@@ -92,16 +92,21 @@ Item.prototype.commitValues = function () {
 
 
 /**
- * Commit a whole item values. Disregarded other dimensions.
+ * Commit a whole item backgrounds. Disregarded other dimensions.
  */
-Item.prototype.commitDimensions = function () {
+Item.prototype.commitBackgrounds = function () {
   if (!(this.authorizedToCommit)) {
     throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
   }
-
-
+  var rowBackgrounds = [];
+  for (var j = 0; j < this.header.length; j++) {
+    var field = this.header[j];
+    var background = this.getFieldBackground(field);
+    rowBackgrounds.push(background)
+  }
+  var lineRange = this.getLineRange();
+  lineRange.setBackgrounds([rowBackgrounds]);
 };
-
 
 
 /**
@@ -230,6 +235,18 @@ Item.prototype.getFieldBackground = function(field) {
  */
 Item.prototype.setFieldBackground = function(field, background) {
   this.fields[field]["background"] = background
+};
+
+
+/**
+ * Method to set background on the whole item.
+ * @param {String} color: The name or hex of the color.
+ */
+Item.prototype.setBackground = function(color) {
+  for (var i = 0; i < this.header.length; i++) {
+    var field = this.header[i];
+    this.fields[field]["background"] = color
+  }
 };
 
 
