@@ -276,6 +276,7 @@ Item.prototype.getFieldFontColor = function(field) {
   return this.fields[field]["font"]
 };
 
+
 /**
  * Method to set font color for a given field.
  * @param {String} field: The name of the field.
@@ -283,5 +284,16 @@ Item.prototype.getFieldFontColor = function(field) {
  */
 Item.prototype.setFieldFontColor = function(field, fontColor) {
   this.fields[field]["font"] = fontColor
+};
+
+
+/**
+ * Method to get the cell range for a specific field.
+ * @param {String} field: The name of the field.
+ * @return {Range} the cell range of the field.
+ */
+Item.prototype.getFieldRange = function(field) {
+  var fieldIndex = this.header.indexOf(field);
+  return this.getLineRange().getCell(1, fieldIndex + 1)
 };
 
