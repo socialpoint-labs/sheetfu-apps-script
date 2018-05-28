@@ -399,6 +399,9 @@ GridArray.prototype = cloneObj(Array.prototype);
  * Method to return only the first result of an array. Useful when result of selection.
  */
 GridArray.prototype.first = function() {
+  if (this.length === 0) {
+    return undefined
+  }
   return this[0]
 };
 
