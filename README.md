@@ -124,7 +124,7 @@ You can use this code in 2 ways:
 * GIT clone this repo and create your own app script file using this code.
 * Access it as an app script library from the app script editor.
     * Go to Resources > Libraries ...
-    * In the 'Add a library' placeholder, add the following key: 1mONx8BnHcZUF1UbZZ5ZVCYt8xIRaFjVpmT6Qs1PZMAgYl6XVqeWsjBDi
+    * In the 'Add a library' placeholder, add the following key: 1N8BGDNX4N64WP4HRjsnZJNwBx2UrAbc_DPZKYwFnVxqzeJdqEJQuCBSv
     * 'Sheetfu' should be prompted. Select the last version. 
     * You can then access the Table class by using Sheetfu.Table() in your code.
 
