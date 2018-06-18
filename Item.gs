@@ -196,7 +196,8 @@ Item.prototype.getFieldValue = function(field) {
  * @param {String|Number|Date} value: The value to set.
  */
 Item.prototype.setFieldValue = function(field, value) {
-  this.fields[field]["value"] = value
+  this.fields[field]["value"] = value;
+  return this
 };
 
 
@@ -215,7 +216,8 @@ Item.prototype.getFieldNote = function(field) {
  * @param {String} note: The note to set.
  */
 Item.prototype.setFieldNote = function(field, note) {
-  this.fields[field]["note"] = note
+  this.fields[field]["note"] = note;
+  return this
 };
 
 
@@ -234,7 +236,8 @@ Item.prototype.getFieldBackground = function(field) {
  * @param {String} background: The background to set (color string or hex code string).
  */
 Item.prototype.setFieldBackground = function(field, background) {
-  this.fields[field]["background"] = background
+  this.fields[field]["background"] = background;
+  return this
 };
 
 
@@ -247,6 +250,7 @@ Item.prototype.setBackground = function(color) {
     var field = this.header[i];
     this.fields[field]["background"] = color
   }
+  return this
 };
 
 
@@ -264,7 +268,8 @@ Item.prototype.getFieldFormula = function(field) {
  * @param {String} formula: The formula to set (must start with "=").
  */
 Item.prototype.setFieldFormula = function(field, formula) {
-  this.fields[field]["formula"] = formula
+  this.fields[field]["formula"] = formula;
+  return this
 };
 
 
@@ -283,7 +288,8 @@ Item.prototype.getFieldFontColor = function(field) {
  * @param {String} fontColor: The font color to set.
  */
 Item.prototype.setFieldFontColor = function(field, fontColor) {
-  this.fields[field]["font"] = fontColor
+  this.fields[field]["font"] = fontColor;
+  return this
 };
 
 
