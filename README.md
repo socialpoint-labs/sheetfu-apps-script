@@ -72,6 +72,9 @@ function loopThroughItems() {
 
 ```
 
+
+---
+
 If the Item object have a method that is not in our API yet, you can always get the Range object for any given line or field and access every methods available to the GAS Range object documented here: https://developers.google.com/apps-script/reference/spreadsheet/range
 
    
@@ -89,6 +92,7 @@ function getItemRanges() {
 
 ```
 
+---
 
 Every examples above assume that the target sheet only contains the table data. In many cases, we have more complex sheets that contains multiple mini grid/tables.
 Sheetfu can easily handle this situation by creating a table from a Range object instead of a sheet name. The submitted Range object must contain the header on its first line.
@@ -110,6 +114,7 @@ function getItemRanges() {
 
 ```
 
+---
 
 If you have a field that you know is a unique value for every item (like an ID, email, etc...), 
 you can create a table index to have very fast lookup if you want to search by ID.
@@ -149,8 +154,6 @@ function lookingForPhilippe() {
 ```
 
 If you have a table of 20,000 lines, and you have to do make multiple lookups within the same process, performance will improve by orders of magnitude.
-
-
 
 
 ### Some comments/caveats:
