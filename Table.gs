@@ -131,7 +131,6 @@ Table.prototype.commitValues = function() {
   itemsRange.setValues(values)
 };
 
-
 /**
  * Method to get the new Range for the items, based on lenght of Table.items.
  */
@@ -141,7 +140,6 @@ Table.prototype.getItemsRange = function() {
   var sheet = this.gridRange.getSheet();
   return sheet.getRange(row, column, this.items.length, this.header.length)
 };
-
 
 /**
  * Method to create both values and notes 2D arrays from grid items.
@@ -167,7 +165,7 @@ Table.prototype.getGridData = function() {
       var value = item.getFieldValue(field);
       var formula = item.getFieldFormula(field);
 
-      (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+      (formula)? rowValues.push(formula) : rowValues.push(value);
       rowNotes.push(item.getFieldNote(field));
       rowBackgrounds.push(item.getFieldBackground(field));
       rowWraps.push(false);
@@ -199,13 +197,12 @@ Table.prototype.getGridValues = function() {
       var value = item.getFieldValue(field);
       var formula = item.getFieldFormula(field);
 
-      (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+      (formula)? rowValues.push(formula) : rowValues.push(value);
     }
     values.push(rowValues);
   }
   return values
 };
-
 
 /**
  * Method to query rows from a Table, given exact match attributes.
@@ -266,7 +263,7 @@ Table.prototype.updateMany = function(manyItems) {
  * Method to delete all rows in a Table.
  */
 Table.prototype.resetGrid = function() {
-  this.gridRange.clearContent();
+  this.gridRange.clear({contentsOnly: true, skipFilteredRows: true});
   var header = this.getHeaderRange();
   header.setValues([this.header])
 };

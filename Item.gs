@@ -52,7 +52,7 @@ Item.prototype.commit = function () {
     var value = this.getFieldValue(field);
     var formula = this.getFieldFormula(field);
 
-    (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+    (formula)? rowValues.push(formula) : rowValues.push(value);
     rowNotes.push(this.getFieldNote(field));
     rowBackgrounds.push(this.getFieldBackground(field));
     rowWraps.push(false);
@@ -83,7 +83,7 @@ Item.prototype.commitValues = function () {
     var value = this.getFieldValue(field);
     var formula = this.getFieldFormula(field);
 
-    (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+    (formula)? rowValues.push(formula) : rowValues.push(value);
   }
 
   var lineRange = this.getLineRange();
@@ -118,10 +118,10 @@ Item.prototype.commitField = function (field) {
     throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
   }
   var cellRange = this.getFieldRange(field);
-  if (this.getFieldFormula(field) === "") {
-    cellRange.setValue(this.getFieldValue(field));
+  if (this.getFieldFormula(field)) {
+    cellRange.setValue(this.getFieldFormula(field));  
   } else {
-    cellRange.setValue(this.getFieldFormula(field));
+    cellRange.setValue(this.getFieldValue(field));
   }
 
   cellRange.setNote(this.getFieldNote(field));
@@ -140,10 +140,10 @@ Item.prototype.commitFieldValue = function (field) {
     throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
   }
   var cellRange = this.getFieldRange(field);
-  if (this.getFieldFormula(field) === "") {
-    cellRange.setValue(this.getFieldValue(field));
-  } else {
+  if (this.getFieldFormula(field)) {
     cellRange.setValue(this.getFieldFormula(field));
+  } else {
+    cellRange.setValue(this.getFieldValue(field)); 
   }
 };
 
@@ -197,6 +197,7 @@ Item.prototype.getFieldValue = function(field) {
  */
 Item.prototype.setFieldValue = function(field, value) {
   this.fields[field]["value"] = value;
+  this.fields[field]["formula"] = '';
   return this
 };
 
