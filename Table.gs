@@ -190,7 +190,7 @@ Table.prototype.getGridData = function() {
       var value = item.getFieldValue(field);
       var formula = item.getFieldFormula(field);
 
-      (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+      (formula)? rowValues.push(formula) : rowValues.push(value);
       rowNotes.push(item.getFieldNote(field));
       rowBackgrounds.push(item.getFieldBackground(field));
       rowWraps.push(false);
@@ -222,7 +222,7 @@ Table.prototype.getGridValues = function() {
       var value = item.getFieldValue(field);
       var formula = item.getFieldFormula(field);
 
-      (formula !== "")? rowValues.push(formula) : rowValues.push(value);
+      (formula)? rowValues.push(formula) : rowValues.push(value);
     }
     values.push(rowValues);
   }
