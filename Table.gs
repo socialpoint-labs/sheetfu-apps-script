@@ -311,7 +311,7 @@ Table.prototype.updateMany = function(manyItems) {
  * Method to delete all rows in a Table.
  */
 Table.prototype.resetGrid = function() {
-  this.gridRange.clearContent();
+  this.gridRange.clear({contentsOnly: true, skipFilteredRows: true});
   var header = this.getHeaderRange();
   header.setValues([this.header])
 };
