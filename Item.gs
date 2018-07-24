@@ -197,6 +197,7 @@ Item.prototype.getFieldValue = function(field) {
  */
 Item.prototype.setFieldValue = function(field, value) {
   this.fields[field]["value"] = value;
+  this.fields[field]["formula"] = '';
   return this
 };
 
