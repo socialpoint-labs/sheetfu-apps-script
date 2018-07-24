@@ -132,19 +132,6 @@ Table.prototype.commitValues = function() {
 };
 
 /**
- * Method to commit the fields items values into the associated sheet (regardless if number of items have changed).
- * @param {Array[]} fields: a list of all fields to commit the values
- */
-Table.prototype.commitFieldsValues = function(fields) {
-  for (var i=0; i < fields.length; i++) {
-    var values = this.getFieldValues(fields[i]);
-    var fieldRange = this.getFieldRange(fields[i]);
-    fieldRange.clearContent();
-    fieldRange.setValues(values);
-  }
-};
-
-/**
  * Method to get the new Range for the items, based on lenght of Table.items.
  */
 Table.prototype.getItemsRange = function() {
@@ -152,18 +139,6 @@ Table.prototype.getItemsRange = function() {
   var column = this.gridRange.getColumn();
   var sheet = this.gridRange.getSheet();
   return sheet.getRange(row, column, this.items.length, this.header.length)
-};
-
-/**
- * Method to get the new Range for the items, based on lenght of Table.items.
- * @param {String} field: Field name you want to get the range.
- */
-Table.prototype.getFieldRange = function(field) {
-  var row = this.gridRange.getRow() + 1;    // +1 to disregard header row
-  var initialColumn = this.gridRange.getColumn();
-  var targetColumn = this.header.indexOf(field);
-  var sheet = this.gridRange.getSheet();
-  return sheet.getRange(row, initialColumn + targetColumn, this.items.length)
 };
 
 /**
@@ -224,29 +199,6 @@ Table.prototype.getGridValues = function() {
 
       (formula)? rowValues.push(formula) : rowValues.push(value);
     }
-    values.push(rowValues);
-  }
-  return values
-};
-
-/**
- * Method to create 2D array of the field values of every grid items.
- * @param {String} field: Field name you want to get the values.
- * @return {Array[]} The values 2D array.
- */
-Table.prototype.getFieldValues = function(field) {
-  var values = [];
-
-  for (var i = 0; i < this.items.length; i++) {
-    var rowValues = [];
-    var item = this.items[i];
-
-    var j = this.header.indexOf(field);
-    var field = this.header[j];
-    var value = item.getFieldValue(field);
-    var formula = item.getFieldFormula(field);
-
-    (formula)? rowValues.push(formula) : rowValues.push(value);
     values.push(rowValues);
   }
   return values
