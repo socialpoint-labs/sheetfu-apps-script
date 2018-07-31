@@ -104,8 +104,8 @@ function getItemRanges() {
     var peopleRange = SpreadsheetApp().getSheetByName('people').getRange(1, 1, 20, 3);
     var animalRange = SpreadsheetApp().getSheetByName('people').getRange(60, 60, 10, 5);
     
-    var peopleTable = new Table(peopleRange);
-    var animalTable = new Table(animalRange);
+    var peopleTable = new Sheetfu.Table(peopleRange);
+    var animalTable = new Sheetfu.Table(animalRange);
     
     
     // Alternatively you can create a table by using a named Range.
@@ -147,7 +147,7 @@ function lookingForPhilippe() {
     // Also work when you create a table with the Table Object
     var range = SpreadsheetApp().getSheetByName('people').getRange(1, 1, 20, 4);
     var indexField = 'email';
-    var table = Sheetfu.getTable(range, indexField);
+    var table = new Sheetfu.Table(range, indexField);
     var philippe = table.getItemById('philippe@gmail.com');
 }
 
