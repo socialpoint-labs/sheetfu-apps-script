@@ -27,9 +27,55 @@ function getTable(sheetName, headerRow, indexField) {
 function getTableByName(namedRange, indexField) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var tableRange = ss.getRangeByName(namedRange);
-  return new Table(tableRange, indexField);
+  var dataRange = trimRange(tableRange);
+  return new Table(dataRange, indexField);
 }
 
+/**
+ * Function to trim a range. The range should contain a header in the first row.
+ * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
+ * @returns {Range}
+ */
+function trimRange(range) {
+  var values = range.getValues();
+  for (var row=0; row < values.length; row++) {
+    var counter = 0;
+    for (var column=0; column < values[row].length; column++) {
+      var value = values[row][column];
+      if (value === '') {
+        counter++;
+      }
+    }
+    if (counter === values[row].length) {
+      break
+    }
+  }
+  var headerObj = trimArray(values[0]);
+  return range.offset(rowOffset=0, columnOffset=headerObj.startPosition,
+                      numRows=row, numColumns=headerObj.trimmedArray.length);
+}
+
+/**
+ * Function to trim an array. It returns the new trimmed array and the start position.
+ * @param {Array} array: A list of strings.
+ * @returns {Object}
+ */
+function trimArray(array) {
+  for (var start=0; start < array.length; start++) {
+    if (array[start] !== '') {
+      break
+    }
+  }
+  for (var end = array.length - 1; end >= 0; end--) {
+    if (array[end] !== '') {
+      break
+    }
+  }
+  var obj = {};
+  obj.trimmedArray = array.slice(start, end+1);
+  obj.startPosition = start;
+  return obj;
+}
 
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
  * identifiable (no id). Use Table Class for DB-like queries instead (when unique id exist for each row).
