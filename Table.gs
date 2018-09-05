@@ -27,44 +27,7 @@ function getTable(sheetName, headerRow, indexField) {
 function getTableByName(namedRange, indexField) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var tableRange = ss.getRangeByName(namedRange);
-  var dataRange = trimRange(tableRange);
-  return new Table(dataRange, indexField);
-}
-
-function trimRange(range) {
-  var values = range.getValues();
-  for (var row=0; row < values.length; row++) {
-    var counter = 0;
-    for (var column=0; column < values[row].length; column++) {
-      var value = values[row][column];
-      if (value === '') {
-        counter++;
-      }
-    }
-    if (counter === values[row].length) {
-      break
-    }
-  }
-  var headerObj = trimArray(values[0]);
-  return range.offset(rowOffset=0, columnOffset=headerObj.start,
-                      numRows=row, numColumns=headerObj.trimmedArray.length);
-}
-
-function trimArray(array) {
-  for (var start=0; start < array.length; start++) {
-    if (array[start] !== '') {
-      break
-    }
-  }
-  for (var end = array.length - 1; end >= 0; end--) {
-    if (array[end] !== '') {
-      break
-    }
-  }
-  var obj = {};
-  obj.trimmedArray = array.slice(start, end+1);
-  obj.start = start;
-  return obj;
+  return new Table(tableRange, indexField);
 }
 
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
