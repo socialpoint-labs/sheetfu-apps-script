@@ -27,9 +27,45 @@ function getTable(sheetName, headerRow, indexField) {
 function getTableByName(namedRange, indexField) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var tableRange = ss.getRangeByName(namedRange);
-  return new Table(tableRange, indexField);
+  var dataRange = trimRange(tableRange);
+  return new Table(dataRange, indexField);
 }
 
+function trimRange(range) {
+  var values = range.getValues();
+  for (var row=0; row < values.length; row++) {
+    var counter = 0;
+    for (var column=0; column < values[row].length; column++) {
+      var value = values[row][column];
+      if (value === '') {
+        counter++;
+      }
+    }
+    if (counter === values[row].length) {
+      break
+    }
+  }
+  var headerObj = trimArray(values[0]);
+  return range.offset(rowOffset=0, columnOffset=headerObj.start,
+                      numRows=row, numColumns=headerObj.trimmedArray.length);
+}
+
+function trimArray(array) {
+  for (var start=0; start < array.length; start++) {
+    if (array[start] !== '') {
+      break
+    }
+  }
+  for (var end = array.length - 1; end >= 0; end--) {
+    if (array[end] !== '') {
+      break
+    }
+  }
+  var obj = {};
+  obj.trimmedArray = array.slice(start, end+1);
+  obj.start = start;
+  return obj;
+}
 
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
  * identifiable (no id). Use Table Class for DB-like queries instead (when unique id exist for each row).
@@ -39,6 +75,7 @@ function getTableByName(namedRange, indexField) {
  */
 function Table(gridRange, indexField) {
 
+  this.initialGridRange = gridRange;
   this.gridRange = gridRange;
   this.header = this.getHeader();
   this.items = this.initiateItems();
@@ -88,7 +125,7 @@ Table.prototype.initiateItems = function() {
   var items = new GridArray();
 
   for (var row = 0; row < rawValues.length; row++) {
-    var parseItem = new Item(row, this.gridRange, this.header);
+    var parseItem = new Item(row, this.header, this.gridRange.getRow(), this.gridRange.getColumn(), this.gridRange.getSheet());
     for (var column = 0; column < this.header.length; column++) {
       var label = this.header[column];
       parseItem.addField(
@@ -102,7 +139,7 @@ Table.prototype.initiateItems = function() {
     }
     items.push(parseItem)
   }
-  return items
+  return items;
 };
 
 
@@ -112,7 +149,8 @@ Table.prototype.initiateItems = function() {
 Table.prototype.commit = function() {
   var dataToSend = this.getGridData();
   var itemsRange = this.getItemsRange();
-  this.resetGrid();
+  this.cleanInitialGrid();
+  this.initialGridRange = this.gridRange;
   itemsRange.setValues(dataToSend['values']);
   itemsRange.setNotes(dataToSend['notes']);
   itemsRange.setBackgrounds(dataToSend['backgrounds']);
@@ -127,7 +165,8 @@ Table.prototype.commit = function() {
 Table.prototype.commitValues = function() {
   var values = this.getGridValues();
   var itemsRange = this.getItemsRange();
-  this.resetGrid();
+  this.cleanInitialGrid();
+  this.initialGridRange = this.gridRange;
   itemsRange.setValues(values)
 };
 
@@ -220,20 +259,20 @@ Table.prototype.select = function(filterObject) {
       if (currentRow.getFieldValue(label) instanceof Date) {
         if(currentRow.getFieldValue(label).getTime() !== filterObject[label].getTime()) {
           matching = false;
-          break
+          break;
         }
       } else {
         if (currentRow.getFieldValue(label) !== filterObject[label]) {
           matching = false;
-          break
+          break;
         }
       }
     }
     if (matching === true) {
-      queryItems.push(currentRow)
+      queryItems.push(currentRow);
     }
   }
-  return queryItems
+  return queryItems;
 };
 
 
@@ -243,7 +282,7 @@ Table.prototype.select = function(filterObject) {
  * The index value is the value where the item is in the Table.items array. Needed to be able to change the value in Table.
  */
 Table.prototype.update = function(item) {
-  this.items[item['_i']] = item
+  this.items[item['_i']] = item;
 };
 
 
@@ -252,20 +291,28 @@ Table.prototype.update = function(item) {
  * @param {object[]} manyItems: list of objects to update.
  */
 Table.prototype.updateMany = function(manyItems) {
-  for (var i = 0; i < items.length; i++) {
+  for (var i = 0; i < this.items.length; i++) {
     var index = manyItems[i]['_i'];
     this.items[index] = manyItems[i]
   }
 };
 
+/**
+ * Method to delete all items withing the items grid.
+ */
+Table.prototype.deleteAll = function() {
+  this.items = this.initiateItems();
+  this.gridRange = this.getHeaderRange();
+};
+
 
 /**
- * Method to delete all rows in a Table.
+ * Method to delete all rows inside the initial grid.
  */
-Table.prototype.resetGrid = function() {
-  this.gridRange.clear({contentsOnly: true, skipFilteredRows: true});
+Table.prototype.cleanInitialGrid = function() {
+  this.initialGridRange.clear({contentsOnly: true, skipFilteredRows: true});
   var header = this.getHeaderRange();
-  header.setValues([this.header])
+  header.setValues([this.header]);
 };
 
 
@@ -285,22 +332,26 @@ Table.prototype.getHeaderRange = function() {
  * Method to add a new item into the Table. Add the item also to index if there is an index.
  * @param {object} raw_item: an object item containing only values. Field must be matching header values.
  */
-Table.prototype.add = function(raw_item) {
-  var newItem = new Item(this.items.length, this.gridRange, this.header);
+Table.prototype.add = function(raw_item) { 
+  var newItem = new Item(this.items.length, this.header, this.gridRange.getRow(), this.gridRange.getColumn(), this.gridRange.getSheet());
 
   for (var i = 0; i < this.header.length; i++) {
     var label = this.header[i];
     if (raw_item[label] === undefined) {
       raw_item[label] = "";
     }
-    newItem.addField(field=label, value=raw_item[label])
+    newItem.addField(field=label, value=raw_item[label]);
   }
   this.items.push(newItem);
+  
+  // Increase the gridRange by one row
+  this.gridRange = this.gridRange.offset(0, 0, this.gridRange.getHeight()+1, this.gridRange.getWidth());
+  
   if (this.index !== undefined) {
     var indexId = newItem.getFieldValue(this.indexField);
-    this.index[indexId] = newItem
+    this.index[indexId] = newItem;
   }
-  return newItem
+  return newItem;
 };
 
 
