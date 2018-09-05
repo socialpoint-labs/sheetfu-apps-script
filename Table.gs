@@ -38,7 +38,7 @@ function getTableByName(namedRange, indexField) {
  */
 function trimRange(range) {
   var values = range.getValues();
-  for (var row=0; row < values.length; row++) {
+  for (var row=values.length - 1; row >= 0; row--) {
     var counter = 0;
     for (var column=0; column < values[row].length; column++) {
       var value = values[row][column];
@@ -46,13 +46,13 @@ function trimRange(range) {
         counter++;
       }
     }
-    if (counter === values[row].length) {
+    if (counter !== values[row].length) {
       break
     }
   }
   var headerObj = trimArray(values[0]);
   return range.offset(rowOffset=0, columnOffset=headerObj.startPosition,
-                      numRows=row, numColumns=headerObj.trimmedArray.length);
+                      numRows=row+1, numColumns=headerObj.trimmedArray.length);
 }
 
 /**
