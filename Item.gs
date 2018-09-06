@@ -5,10 +5,13 @@
  * @param {Array} header: The header array.
  * @constructor
  */
-function Item(i, range, header) {
+function Item(i, header, row, column, sheet) {
   this.i = i;
-  this.gridRange = range;
   this.header = header;
+  
+  this.tableRow = row;
+  this.tableColumn = column;
+  this.tableSheet = sheet;
 
   this.fields = {};
   this.authorizedToCommit = true
@@ -154,10 +157,10 @@ Item.prototype.commitFieldValue = function (field) {
  */
 Item.prototype.getLineRange = function () {
   var headerOffset = 1;
-  var rangePositionOffset = this.gridRange.getRow();
+  var rangePositionOffset = this.tableRow;
   var row = this.i + headerOffset + rangePositionOffset;
-  var column = this.gridRange.getColumn();
-  var sheet = this.gridRange.getSheet();
+  var column = this.tableColumn;
+  var sheet = this.tableSheet;
   return sheet.getRange(row, column, 1, this.header.length)
 };
 
