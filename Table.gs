@@ -38,8 +38,8 @@ function getTableByName(namedRange, indexField) {
  */
 function Table(gridRange, indexField) {
 
-  this.initialGridRange = gridRange;
   this.gridRange = gridRange;
+  this.initialGridRange = this.gridRange;
   this.header = this.getHeader();
   this.items = this.initiateItems();
 
