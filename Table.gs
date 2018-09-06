@@ -30,6 +30,7 @@ function getTableByName(namedRange, indexField) {
   return new Table(tableRange, indexField);
 }
 
+
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
  * identifiable (no id). Use Table Class for DB-like queries instead (when unique id exist for each row).
  * @param {Range} gridRange: a range object from Google spreadsheet. First row of range must be the headers.
