@@ -256,7 +256,7 @@ Table.prototype.update = function(item) {
 Table.prototype.updateMany = function(manyItems) {
   for (var i = 0; i < this.items.length; i++) {
     var index = manyItems[i]['_i'];
-    this.items[index] = manyItems[i]
+    this.items[index] = manyItems[i];
   }
 };
 
@@ -264,7 +264,7 @@ Table.prototype.updateMany = function(manyItems) {
  * Method to delete all items withing the items grid.
  */
 Table.prototype.deleteAll = function() {
-  this.items = this.initiateItems();
+  this.items = new GridArray();
   this.gridRange = this.getHeaderRange();
 };
 
@@ -427,5 +427,4 @@ GridArray.prototype.limit = function(x) {
     return this
   }
 };
-
 
