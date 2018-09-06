@@ -27,54 +27,7 @@ function getTable(sheetName, headerRow, indexField) {
 function getTableByName(namedRange, indexField) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var tableRange = ss.getRangeByName(namedRange);
-  var dataRange = trimRange(tableRange);
-  return new Table(dataRange, indexField);
-}
-
-/**
- * Function to trim a range. The range should contain a header in the first row.
- * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
- * @returns {Range}
- */
-function trimRange(range) {
-  var values = range.getValues();
-  for (var row=values.length - 1; row >= 0; row--) {
-    var counter = 0;
-    for (var column=0; column < values[row].length; column++) {
-      var value = values[row][column];
-      if (value === '') {
-        counter++;
-      }
-    }
-    if (counter !== values[row].length) {
-      break
-    }
-  }
-  var headerObj = trimArray(values[0]);
-  return range.offset(rowOffset=0, columnOffset=headerObj.startPosition,
-                      numRows=row+1, numColumns=headerObj.trimmedArray.length);
-}
-
-/**
- * Function to trim an array. It returns the new trimmed array and the start position.
- * @param {Array} array: A list of strings.
- * @returns {Object}
- */
-function trimArray(array) {
-  for (var start=0; start < array.length; start++) {
-    if (array[start] !== '') {
-      break
-    }
-  }
-  for (var end = array.length - 1; end >= 0; end--) {
-    if (array[end] !== '') {
-      break
-    }
-  }
-  var obj = {};
-  obj.trimmedArray = array.slice(start, end+1);
-  obj.startPosition = start;
-  return obj;
+  return new Table(tableRange, indexField);
 }
 
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
@@ -85,7 +38,7 @@ function trimArray(array) {
  */
 function Table(gridRange, indexField) {
 
-  this.gridRange = gridRange;
+  this.gridRange = trimRange(gridRange);
   this.header = this.getHeader();
   this.items = this.initiateItems();
 
@@ -459,5 +412,51 @@ GridArray.prototype.limit = function(x) {
     return this
   }
 };
+
+/**
+ * Function to trim a range. The range should contain a header in the first row.
+ * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
+ * @returns {Range}
+ */
+function trimRange(range) {
+  var values = range.getValues();
+  for (var row=values.length - 1; row >= 0; row--) {
+    var counter = 0;
+    for (var column=0; column < values[row].length; column++) {
+      var value = values[row][column];
+      if (value === '') {
+        counter++;
+      }
+    }
+    if (counter !== values[row].length) {
+      break
+    }
+  }
+  var header = trimArray(values[0]);
+  return range.offset(rowOffset=0, columnOffset=header.startPosition,
+                      numRows=row+1, numColumns=header.trimmedArray.length);
+}
+
+/**
+ * Function to trim an array. It returns the new trimmed array and the start position.
+ * @param {Array} array: A list of strings.
+ * @returns {Object}
+ */
+function trimArray(array) {
+  for (var start=0; start < array.length; start++) {
+    if (array[start] !== '') {
+      break
+    }
+  }
+  for (var end = array.length - 1; end >= 0; end--) {
+    if (array[end] !== '') {
+      break
+    }
+  }
+  var obj = {};
+  obj.trimmedArray = array.slice(start, end+1);
+  obj.startPosition = start;
+  return obj;
+}
 
 
