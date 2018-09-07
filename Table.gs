@@ -39,7 +39,7 @@ function getTableByName(namedRange, indexField) {
  */
 function Table(gridRange, indexField) {
 
-  this.gridRange = this.trimRange(gridRange);
+  this.gridRange = this.trimRangeRows(gridRange);
   this.header = this.getHeader();
   this.items = this.initiateItems();
 
@@ -415,11 +415,11 @@ GridArray.prototype.limit = function(x) {
 };
 
 /**
- * Method to trim a range. The range should contain a header in the first row.
+ * Function to trim the rows of a range. The range should contain a header in the first row.
  * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
  * @returns {Range}
  */
-Table.prototype.trimRange = function trimRange(range) {
+function trimRangeRows(range) {
   var values = range.getValues();
   for (var rowIndex = values.length - 1; rowIndex >= 0; rowIndex--) {
     if (values[rowIndex].join('') !== '') {
