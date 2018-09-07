@@ -51,6 +51,22 @@ function Table(gridRange, indexField) {
 
 
 /**
+ * Function to trim the rows of a range. The range should contain a header in the first row.
+ * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
+ * @returns {Range}
+ */
+function trimRangeRows(range) {
+  var values = range.getValues();
+  for (var rowIndex = values.length - 1; rowIndex >= 0; rowIndex--) {
+    if (values[rowIndex].join('') !== '') {
+      break
+    }
+  }
+  return range.offset(rowOffset=0, columnOffset=0, numRows=rowIndex+1);
+}
+
+
+/**
  * Method to extract headers of a grid.
  * @return {Array} The list of labels.
  */
@@ -413,20 +429,5 @@ GridArray.prototype.limit = function(x) {
     return this
   }
 };
-
-/**
- * Function to trim the rows of a range. The range should contain a header in the first row.
- * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
- * @returns {Range}
- */
-function trimRangeRows(range) {
-  var values = range.getValues();
-  for (var rowIndex = values.length - 1; rowIndex >= 0; rowIndex--) {
-    if (values[rowIndex].join('') !== '') {
-      break
-    }
-  }
-  return range.offset(rowOffset=0, columnOffset=0, numRows=rowIndex+1);
-}
 
 
