@@ -30,6 +30,7 @@ function getTableByName(namedRange, indexField) {
   return new Table(tableRange, indexField);
 }
 
+
 /** Constructor which create a Table object to query data, get and post. Object to use when rows in sheet are not uniquely
  * identifiable (no id). Use Table Class for DB-like queries instead (when unique id exist for each row).
  * @param {Range} gridRange: a range object from Google spreadsheet. First row of range must be the headers.
@@ -38,15 +39,31 @@ function getTableByName(namedRange, indexField) {
  */
 function Table(gridRange, indexField) {
 
-  this.gridRange = gridRange;
+  this.gridRange = trimRangeRows(gridRange);
   this.initialGridRange = this.gridRange;
   this.header = this.getHeader();
   this.items = this.initiateItems();
 
   this.indexField = indexField;
   if (this.indexField !== undefined) {
-    this.index = this.getIndex(indexField)
+    this.index = this.getIndex(indexField);
   }
+}
+
+
+/**
+ * Function to trim the rows of a range. The range should contain a header in the first row.
+ * @param {Range} range: a range object from Google spreadsheet. First row of range must be the headers.
+ * @returns {Range}
+ */
+function trimRangeRows(range) {
+  var values = range.getValues();
+  for (var rowIndex = values.length - 1; rowIndex >= 0; rowIndex--) {
+    if (values[rowIndex].join('') !== '') {
+      break;
+    }
+  }
+  return range.offset(rowOffset=0, columnOffset=0, numRows=rowIndex+1);
 }
 
 
