@@ -39,7 +39,7 @@ function getTableByName(namedRange, indexField) {
  */
 function Table(gridRange, indexField) {
 
-  this.gridRange = this.trimRangeRows(gridRange);
+  this.gridRange = trimRangeRows(gridRange);
   this.header = this.getHeader();
   this.items = this.initiateItems();
 
