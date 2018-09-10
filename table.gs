@@ -84,9 +84,9 @@ Table.prototype.getIndex = function (indexField) {
   var index = {};
   for (var i = 0; i < this.items.length; i++) {
     var key = this.items[i].getFieldValue(indexField);
-    index[key] = this.items[i]
+    index[key] = this.items[i];
   }
-  return index
+  return index;
 };
 
 
@@ -117,7 +117,7 @@ Table.prototype.initiateItems = function() {
         font=rawFontColors[row][column]
       )
     }
-    items.push(parseItem)
+    items.push(parseItem);
   }
   return items;
 };
@@ -131,11 +131,13 @@ Table.prototype.commit = function() {
   var itemsRange = this.getItemsRange();
   this.cleanInitialGrid();
   this.initialGridRange = this.gridRange;
-  itemsRange.setValues(dataToSend['values']);
-  itemsRange.setNotes(dataToSend['notes']);
-  itemsRange.setBackgrounds(dataToSend['backgrounds']);
-  itemsRange.setWraps(dataToSend['wraps']);
-  itemsRange.setFontColors(dataToSend['fonts'])
+  if(itemsRange !== undefined) {
+    itemsRange.setValues(dataToSend['values']);
+    itemsRange.setNotes(dataToSend['notes']);
+    itemsRange.setBackgrounds(dataToSend['backgrounds']);
+    itemsRange.setWraps(dataToSend['wraps']);
+    itemsRange.setFontColors(dataToSend['fonts']);
+  }
 };
 
 
@@ -147,17 +149,24 @@ Table.prototype.commitValues = function() {
   var itemsRange = this.getItemsRange();
   this.cleanInitialGrid();
   this.initialGridRange = this.gridRange;
-  itemsRange.setValues(values)
+  if(itemsRange !== undefined) {
+    itemsRange.setValues(values);
+  }
 };
 
 /**
  * Method to get the new Range for the items, based on lenght of Table.items.
+ * @return {Range} object of the items range. {Undefined} if the items range is empty.
  */
 Table.prototype.getItemsRange = function() {
+  // We need to check that items is not empty, since Sheet.getRange() throws an exception if numRows or numColumns are 0.
+  if(this.items.length === 0) {
+    return undefined;
+  }
   var row = this.gridRange.getRow() + 1;    // +1 to disregard header row
   var column = this.gridRange.getColumn();
   var sheet = this.gridRange.getSheet();
-  return sheet.getRange(row, column, this.items.length, this.header.length)
+  return sheet.getRange(row, column, this.items.length, this.header.length);
 };
 
 /**
@@ -383,18 +392,24 @@ Table.prototype.sortBy = function(key, ascending) {
  */
 Table.prototype.setItemBackground = function (item, color) {
   for (var field in item.fields) {
-    item.setFieldBackground(field, color)
+    item.setFieldBackground(field, color);
   }
-  return item
+  return item;
 };
 
 
 /**
  * Method to clear background colors on every items.
+ * @return {Range}: The range of items which had their background cleaned. {Undefined} if the items range is empty.
  */
 Table.prototype.clearBackgrounds = function () {
   var itemRange = this.getItemsRange();
-  return itemRange.clearFormat()
+  if(itemRange !== undefined) {
+    return itemRange.clearFormat();
+  }
+  else {
+    return undefined;
+  }
 };
 
 

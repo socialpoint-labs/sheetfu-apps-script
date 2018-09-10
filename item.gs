@@ -14,7 +14,7 @@ function Item(i, header, row, column, sheet) {
   this.tableSheet = sheet;
 
   this.fields = {};
-  this.authorizedToCommit = true
+  this.authorizedToCommit = true;
 }
 
 /**
@@ -30,7 +30,7 @@ Item.prototype.addField = function(label, value, note, background, formula, font
   this.fields[label] = {"value": value, "note": note, "background": background, "formula": formula, "font": font};
   for (var param in this.fields[label]) {
     if (this.fields[label][param] === undefined) {
-      this.fields[label][param] = ""
+      this.fields[label][param] = "";
     }
   }
 };
@@ -67,7 +67,7 @@ Item.prototype.commit = function () {
   lineRange.setNotes([rowNotes]);
   lineRange.setBackgrounds([rowBackgrounds]);
   lineRange.setWraps([rowWraps]);
-  lineRange.setFontColors([rowFontColors])
+  lineRange.setFontColors([rowFontColors]);
 };
 
 
@@ -130,7 +130,7 @@ Item.prototype.commitField = function (field) {
   cellRange.setNote(this.getFieldNote(field));
   cellRange.setBackground(this.getFieldBackground(field));
   cellRange.setWrap(false);
-  cellRange.setFontColor(this.getFieldFontColor(field))
+  cellRange.setFontColor(this.getFieldFontColor(field));
 };
 
 
@@ -161,7 +161,7 @@ Item.prototype.getLineRange = function () {
   var row = this.i + headerOffset + rangePositionOffset;
   var column = this.tableColumn;
   var sheet = this.tableSheet;
-  return sheet.getRange(row, column, 1, this.header.length)
+  return sheet.getRange(row, column, 1, this.header.length);
 };
 
 
@@ -173,7 +173,7 @@ Item.prototype.getLineRange = function () {
 Item.prototype.getFieldRange = function (field) {
   var columnIndexOffset = 1;    // columns starts at 1.
   var columnField = this.header.indexOf(field) + columnIndexOffset;
-  return this.getLineRange().getCell(1, columnField)
+  return this.getLineRange().getCell(1, columnField);
 };
 
 
@@ -187,9 +187,9 @@ Item.prototype.getFieldValue = function(field) {
     var value = this.fields[field]["value"];
   } catch(e) {
     var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
-    throw error
+    throw error;
   }
-  return value
+  return value;
 };
 
 
@@ -201,7 +201,7 @@ Item.prototype.getFieldValue = function(field) {
 Item.prototype.setFieldValue = function(field, value) {
   this.fields[field]["value"] = value;
   this.fields[field]["formula"] = '';
-  return this
+  return this;
 };
 
 
@@ -210,7 +210,7 @@ Item.prototype.setFieldValue = function(field, value) {
  * @param {String} field: The name of the field.
  */
 Item.prototype.getFieldNote = function(field) {
-  return this.fields[field]["note"]
+  return this.fields[field]["note"];
 };
 
 
@@ -230,7 +230,7 @@ Item.prototype.setFieldNote = function(field, note) {
  * @param {String} field: The name of the field.
  */
 Item.prototype.getFieldBackground = function(field) {
-  return this.fields[field]["background"]
+  return this.fields[field]["background"];
 };
 
 
@@ -241,7 +241,7 @@ Item.prototype.getFieldBackground = function(field) {
  */
 Item.prototype.setFieldBackground = function(field, background) {
   this.fields[field]["background"] = background;
-  return this
+  return this;
 };
 
 
@@ -252,9 +252,9 @@ Item.prototype.setFieldBackground = function(field, background) {
 Item.prototype.setBackground = function(color) {
   for (var i = 0; i < this.header.length; i++) {
     var field = this.header[i];
-    this.fields[field]["background"] = color
+    this.fields[field]["background"] = color;
   }
-  return this
+  return this;
 };
 
 
@@ -273,7 +273,7 @@ Item.prototype.getFieldFormula = function(field) {
  */
 Item.prototype.setFieldFormula = function(field, formula) {
   this.fields[field]["formula"] = formula;
-  return this
+  return this;
 };
 
 
@@ -282,7 +282,7 @@ Item.prototype.setFieldFormula = function(field, formula) {
  * @param {String} field: The name of the field.
  */
 Item.prototype.getFieldFontColor = function(field) {
-  return this.fields[field]["font"]
+  return this.fields[field]["font"];
 };
 
 
@@ -293,7 +293,7 @@ Item.prototype.getFieldFontColor = function(field) {
  */
 Item.prototype.setFieldFontColor = function(field, fontColor) {
   this.fields[field]["font"] = fontColor;
-  return this
+  return this;
 };
 
 
@@ -304,6 +304,6 @@ Item.prototype.setFieldFontColor = function(field, fontColor) {
  */
 Item.prototype.getFieldRange = function(field) {
   var fieldIndex = this.header.indexOf(field);
-  return this.getLineRange().getCell(1, fieldIndex + 1)
+  return this.getLineRange().getCell(1, fieldIndex + 1);
 };
 
