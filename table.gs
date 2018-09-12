@@ -286,6 +286,27 @@ Table.prototype.updateMany = function(manyItems) {
   }
 };
 
+
+/**
+ * Method to delete one item from the items grid.
+ * @param {index} int: The index at which to delete an item
+ * The index value is the value where the item is in the Table.items array. Needed to be able to find the value in Table to delete it.
+ */
+Table.prototype.deleteOne = function(index) {
+  if(index >= this.items.length) {
+    throw "The specified index is out of bounds.";
+  }
+  this.items.splice(index, 1);
+  for (var k = index; k < this.items.length; k++) {
+    var itemToUpdateIndex = this.items[k];
+    itemToUpdateIndex.i--;
+  }
+  
+  // Reduce the gridRange by one row
+  this.gridRange = this.gridRange.offset(0, 0, this.gridRange.getHeight()-1, this.gridRange.getWidth());
+};
+
+
 /**
  * Method to delete all items withing the items grid.
  */
@@ -417,7 +438,7 @@ Table.prototype.clearBackgrounds = function () {
  * Get an item from the table by its ID (assuming an index field was given when creating the table).
  */
 Table.prototype.getItemById = function (itemId) {
-  return this.index[itemId]
+  return this.index[itemId];
 };
 
 
@@ -443,9 +464,9 @@ GridArray.prototype = cloneObj(Array.prototype);
  */
 GridArray.prototype.first = function() {
   if (this.length === 0) {
-    return undefined
+    return undefined;
   }
-  return this[0]
+  return this[0];
 };
 
 
@@ -454,9 +475,9 @@ GridArray.prototype.first = function() {
  */
 GridArray.prototype.limit = function(x) {
   if(this.length > x) {
-    return this.slice(0, x)
+    return this.slice(0, x);
   } else {
-    return this
+    return this;
   }
 };
 
