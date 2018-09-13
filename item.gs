@@ -6,14 +6,15 @@
  * @constructor
  */
 function Item(i, header, row, column, sheet) {
-  this.i = i;
+  this.fields = {};
   this.header = header;
   
-  this.tableRow = row;
-  this.tableColumn = column;
-  this.tableSheet = sheet;
-
-  this.fields = {};
+  this.table = {};
+  this.table.row = row;
+  this.table.column = column;
+  this.table.sheet = sheet;
+  
+  this.i = i;
   this.authorizedToCommit = true;
 }
 
@@ -157,10 +158,10 @@ Item.prototype.commitFieldValue = function (field) {
  */
 Item.prototype.getLineRange = function () {
   var headerOffset = 1;
-  var rangePositionOffset = this.tableRow;
+  var rangePositionOffset = this.table.row;
   var row = this.i + headerOffset + rangePositionOffset;
-  var column = this.tableColumn;
-  var sheet = this.tableSheet;
+  var column = this.table.column;
+  var sheet = this.table.sheet;
   return sheet.getRange(row, column, 1, this.header.length);
 };
 
