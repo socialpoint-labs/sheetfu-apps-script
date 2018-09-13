@@ -237,35 +237,45 @@ Table.prototype.getGridValues = function() {
 
 /**
  * Method to query rows from a Table, given exact match attributes.
- * @return {object} filteredObject: Object with key/value pair filtered (exact match).
+ * @return {object} filteredObject: Object with key/value pair filtered (exact match), allowing an array value for OR queries
  */
 Table.prototype.select = function(filterObject) {
   var queryItems = new GridArray();
 
   for (var i = 0; i < this.items.length; i++) {
-
     var currentRow = this.items[i];
-    var matching = true;
+    var matching = false;
 
     for (var label in filterObject) {
-      if (currentRow.getFieldValue(label) instanceof Date) {
-        if(currentRow.getFieldValue(label).getTime() !== filterObject[label].getTime()) {
-          matching = false;
-          break;
+      var currentValue = currentRow.getFieldValue(label);
+      if (Array.isArray(filterObject[label])) {
+        for (var n = 0; n < filterObject[label].length && !matching; n++) {
+          if (criteriaMatchValue(criteria=filterObject[label][n], value=currentValue)) {
+            matching = true;
+          }
         }
       } else {
-        if (currentRow.getFieldValue(label) !== filterObject[label]) {
-          matching = false;
-          break;
-        }
+        if (criteriaMatchValue(criteria=filterObject[label], value=currentValue)) {
+          matching = true;
+        } 
       }
-    }
-    if (matching === true) {
-      queryItems.push(currentRow);
+      
+      if (matching) {
+        queryItems.push(currentRow);
+        break;
+      }
     }
   }
   return queryItems;
 };
+
+
+/**
+ * Function to check a matching between a value and a criteria, considering also value as a Date.
+*/
+function criteriaMatchValue(criteria, value) {
+  return ((value instanceof Date && value.getTime() === criteria.getTime()) || value === criteria)
+}
 
 
 /**
