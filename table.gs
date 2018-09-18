@@ -292,7 +292,8 @@ Table.prototype.updateMany = function(manyItems) {
  * @param {index} int: The index at which to delete an item
  * The index value is the value where the item is in the Table.items array. Needed to be able to find the value in Table to delete it.
  */
-Table.prototype.deleteOne = function(index) {
+Table.prototype.deleteOne = function(item) {
+  var index = item.i;
   if(index >= this.items.length) {
     throw "The specified index is out of bounds.";
   }
