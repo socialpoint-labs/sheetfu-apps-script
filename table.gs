@@ -289,7 +289,7 @@ Table.prototype.updateMany = function(manyItems) {
 
 /**
  * Method to delete one item from the items grid.
- * @param {index} int: The index at which to delete an item
+ * @param {item} item: An item from this.items that you wish to delete
  * The index value is the value where the item is in the Table.items array. Needed to be able to find the value in Table to delete it.
  */
 Table.prototype.deleteItem = function(item) {
