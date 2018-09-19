@@ -271,8 +271,8 @@ function isMatching(currentRow, filterObject) {
     // AND is the default operator
     if (isOperatorAND) {
       if (Array.isArray(filterObject[label])) {
+         //OR operator inside the AND operator 
          if (!isMatchingAtLeastOneValue(array=filterObject[label], value=currentValue)) {
-          //OR operator inside the AND operator
           return false ;
          }
       }
