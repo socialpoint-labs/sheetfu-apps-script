@@ -236,39 +236,77 @@ Table.prototype.getGridValues = function() {
 };
 
 /**
- * Method to query rows from a Table, given exact match attributes.
- * @return {object} filteredObject: Object with key/value pair filtered (exact match), allowing an array value for OR queries
+ * Method to query rows from a Table, given match attributes.
+ * @param {Object} filterObject: an object used as criteria. Some examples:
+ * >>> {name: 'Guillem', surname: 'Orpinell'} // (name === 'Guillem' && surname === 'Orpinell')
+ * >>> {assigneeId: ['GO','AM']} // (assigneeId === 'GO' || assigneeId === 'AM')
+ * >>> {color: 'red', tags: [1, 2], operator: 'OR'} // (color === red || tags === 1 || tags === 2)
+ * >>> {date: today, tags: [1, 2]} // (dateFrom === today && (tags === 1 || tags === 2))
+ * @return {Item[]} List of Item objects matching the given criteria.
  */
 Table.prototype.select = function(filterObject) {
   var queryItems = new GridArray();
 
   for (var i = 0; i < this.items.length; i++) {
-    var currentRow = this.items[i];
-    var matching = false;
-
-    for (var label in filterObject) {
-      var currentValue = currentRow.getFieldValue(label);
-      if (Array.isArray(filterObject[label])) {
-        for (var n = 0; n < filterObject[label].length && !matching; n++) {
-          if (criteriaMatchValue(criteria=filterObject[label][n], value=currentValue)) {
-            matching = true;
-          }
-        }
-      } else {
-        if (criteriaMatchValue(criteria=filterObject[label], value=currentValue)) {
-          matching = true;
-        } 
-      }
-      
-      if (matching) {
-        queryItems.push(currentRow);
-        break;
-      }
+    var currentRow = this.items[i];    
+    if (isMatching(currentRow, filterObject)) {
+      queryItems.push(currentRow);
     }
   }
   return queryItems;
 };
 
+/**
+ * Function to check an unmatching in case of AND operator (default operator)
+ * or a matching in case of OR operator. Values can be Date objects.
+ * An OR could be cointained inside the AND operator.
+*/
+function isMatching(currentRow, filterObject) {
+  var isOperatorAND = (!filterObject.operator || (filterObject.operator).toUpperCase() === 'AND');
+  
+  for (var label in filterObject) {
+    if (label === 'operator') { continue; }
+    var currentValue = currentRow.getFieldValue(label);
+    
+    // AND is the default operator
+    if (isOperatorAND) {
+      if (Array.isArray(filterObject[label])) {
+         if (!isMatchingAtLeastOneValue(array=filterObject[label], value=currentValue)) {
+          //OR operator inside the AND operator
+          return false ;
+         }
+      }
+      else if (!criteriaMatchValue(criteria=filterObject[label], value=currentValue)) {
+        return false;
+      }
+    }
+    // OR operator
+    else {
+      if (Array.isArray(filterObject[label])) {
+        if (isMatchingAtLeastOneValue(array=filterObject[label], value=currentValue)) {
+          return true;
+        }
+      } 
+      else if (criteriaMatchValue(criteria=filterObject[label], value=currentValue)) {
+        return true;
+      } 
+    }
+  }
+  return isOperatorAND; //just as default AND match is true, while default OR match is false
+}
+
+
+/**
+ * Function to check a matching of a value in a list (OR operator), considering also value as a Date.
+*/
+function isMatchingAtLeastOneValue(array, value) {
+  for (var n = 0; n < array.length; n++) {
+    if (criteriaMatchValue(criteria=array[n], value)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 /**
  * Function to check a matching between a value and a criteria, considering also value as a Date.
