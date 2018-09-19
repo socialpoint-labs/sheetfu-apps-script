@@ -422,6 +422,15 @@ Table.prototype.getItemById = function (itemId) {
 
 
 /**
+ * Vertical lookup. Searches down the index field of a table (assuming an index field was given when creating the table)
+ * for a criteria and returns the value of a specified field in the item found.
+ */
+Table.prototype.vlookup = function (searchValue, targetField) {
+  return (this.getItemById(searchValue)).getFieldValue(targetField);
+}
+
+
+/**
  * Function to clone an object and simulate inheritance.
  */
 function cloneObj(obj) {
