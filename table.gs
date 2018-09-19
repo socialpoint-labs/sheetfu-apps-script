@@ -287,6 +287,22 @@ Table.prototype.updateMany = function(manyItems) {
 };
 
 
+
+/**
+ * Method to delete items from the items grid based on a selection criteria.
+ * @param {object} filteredObject: Criteria to select the items to delete. See documentation of the "select" method.
+ */
+Table.prototype.deleteItems = function(filterObject) {
+  var selectionToDelete = this.select(filterObject);
+  // For optimal performance, we need to make sure we delete the items in the inverse order of their index.
+  // Table.select() returns the items index-ordered, so we loop through selection inversely.
+  for(var i = selectionToDelete.length - 1; i >= 0; i--)
+  {
+    this.deleteItem(selectionToDelete[i]);
+  }
+};
+
+
 /**
  * Method to delete one item from the items grid.
  * @param {item} item: An item from this.items that you wish to delete
