@@ -6,7 +6,7 @@
  * @returns {Table}
  */
 function getTable(sheetName, headerRow, indexField) {
-  if (typeof headerRow === undefined) {
+  if (!headerRow) {
     headerRow = 1;
   }
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
