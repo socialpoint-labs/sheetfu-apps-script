@@ -41,7 +41,7 @@ Item.prototype.addField = function(label, value, note, background, formula, font
  */
 Item.prototype.commit = function () {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item. The order of the grid it is associated to has changed or it has been deleted."
   }
 
   var rowValues = [];
@@ -76,7 +76,7 @@ Item.prototype.commit = function () {
  */
 Item.prototype.commitValues = function () {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item. The order of the grid it is associated to has changed or it has been deleted."
   }
 
   var rowValues = [];
@@ -118,7 +118,7 @@ Item.prototype.commitBackgrounds = function () {
  */
 Item.prototype.commitField = function (field) {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed or it has been deleted."
   }
   var cellRange = this.getFieldRange(field);
   if (this.getFieldFormula(field)) {
@@ -140,7 +140,7 @@ Item.prototype.commitField = function (field) {
  */
 Item.prototype.commitFieldValue = function (field) {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed or it has been deleted."
   }
   var cellRange = this.getFieldRange(field);
   if (this.getFieldFormula(field)) {
