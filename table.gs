@@ -422,6 +422,21 @@ Table.prototype.getItemById = function (itemId) {
 
 
 /**
+ * Method to return only distinct different values in a field.
+ */
+Table.prototype.distinct = function(field) {
+  var list = [];
+  for (var i = 0; i < this.items.length; i++) {
+    list.push(this.items[i].getFieldValue(field));
+  }
+  var unique = list.filter(function(value, index, self) { 
+    return self.indexOf(value) === index;
+  });
+  return unique
+}
+
+
+/**
  * Function to clone an object and simulate inheritance.
  */
 function cloneObj(obj) {
