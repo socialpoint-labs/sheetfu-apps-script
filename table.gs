@@ -286,6 +286,75 @@ Table.prototype.updateMany = function(manyItems) {
   }
 };
 
+
+
+/**
+ * Method to delete items from the items grid based on a selection criteria.
+ * @param {object} filteredObject: Criteria to select the items to delete. See documentation of the "select" method.
+ */
+Table.prototype.deleteSelection = function(filterObject) {
+  var selectionToDelete = this.select(filterObject);
+  return this.deleteMany(selectionToDelete);
+};
+
+/**
+ * Method to delete several items from the items grid.
+ * @param {list} itemList: A list of items that you wish to delete
+ * Take into account that deleting items re-calculates the indices of all items with higher index inside Table.items.
+ */
+Table.prototype.deleteMany = function(itemList) {
+  if(itemList.length === this.items.length)
+  {
+    return this.deleteAll();
+  }
+  
+  // First we sort the list of items to delete by index
+  itemList.sort(function(firstItem, secondItem) {
+    // Compare the i attribute of both items
+    if(firstItem.i < secondItem.i) return -1;
+    if(firstItem.i > secondItem.i) return 1;
+    return 0;
+  });
+  
+  // Now we iterate the sorted list in inverse order and delete the items
+  var indexReduction = itemList.length;
+  var lastDeletedIndex = this.items.length - 1;
+  for(var i = itemList.length - 1; i >= 0; i--)
+  {
+    var itemToDelete = itemList[i];
+    itemToDelete.authorizedToCommit = false; // To prevent the user from commiting deleted items.
+    var indexToDelete = itemToDelete.i;
+    if(indexToDelete >= this.items.length) {
+      throw "One of the items specified to delete has an out of bounds index.";
+    }
+    this.items.splice(indexToDelete, 1);
+    
+    // For every item to delete, we will recalculate the indexes from the item that was deleted
+    // to the last item before the previously deleted index.
+    for (var k = indexToDelete; k < lastDeletedIndex - 1; k++) {
+      var itemToUpdateIndex = this.items[k];
+      // We reduce the index by as many items are left to delete
+      itemToUpdateIndex.i = itemToUpdateIndex.i - indexReduction;
+    }
+    lastDeletedIndex = indexToDelete;
+    indexReduction--;
+  }
+  
+  // Reduce the gridRange by as many rows as were deleted
+  this.gridRange = this.gridRange.offset(0, 0, this.gridRange.getHeight() - itemList.length, this.gridRange.getWidth());
+};
+
+
+/**
+ * Method to delete one item from the items grid.
+ * @param {item} item: An item from this.items that you wish to delete
+ * Take into account that deleting an item re-calculates the indices of all items with higher index inside Table.items.
+ */
+Table.prototype.deleteOne = function(item) {
+  return this.deleteMany([item]);
+};
+
+
 /**
  * Method to delete all items withing the items grid.
  */
@@ -416,9 +485,18 @@ Table.prototype.clearBackgrounds = function () {
 /**
  * Get an item from the table by its ID (assuming an index field was given when creating the table).
  */
-Table.prototype.getItemById = function (itemId) {
-  return this.index[itemId]
+Table.prototype.getItemById = function (valueId) {
+  return this.index[valueId]
 };
+ 
+
+/**  
+ * Vertical lookup. Searches down the index field of a table (assuming an index field was given when creating the table)
+ * for a criteria and returns the value of a specified field in the item found.
+ */
+Table.prototype.getFieldValueById = function (field, valueId) {
+  return (this.getItemById(valueId)).getFieldValue(field);
+}
 
 
 /**
@@ -459,9 +537,9 @@ GridArray.prototype = cloneObj(Array.prototype);
  */
 GridArray.prototype.first = function() {
   if (this.length === 0) {
-    return undefined
+    return undefined;
   }
-  return this[0]
+  return this[0];
 };
 
 
@@ -470,9 +548,9 @@ GridArray.prototype.first = function() {
  */
 GridArray.prototype.limit = function(x) {
   if(this.length > x) {
-    return this.slice(0, x)
+    return this.slice(0, x);
   } else {
-    return this
+    return this;
   }
 };
 
