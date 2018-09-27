@@ -485,9 +485,18 @@ Table.prototype.clearBackgrounds = function () {
 /**
  * Get an item from the table by its ID (assuming an index field was given when creating the table).
  */
-Table.prototype.getItemById = function (itemId) {
-  return this.index[itemId];
+Table.prototype.getItemById = function (valueId) {
+  return this.index[valueId]
 };
+
+
+/**
+ * Vertical lookup. Searches down the index field of a table (assuming an index field was given when creating the table)
+ * for a criteria and returns the value of a specified field in the item found.
+ */
+Table.prototype.getFieldValueById = function (field, valueId) {
+  return (this.getItemById(valueId)).getFieldValue(field);
+}
 
 
 /**
