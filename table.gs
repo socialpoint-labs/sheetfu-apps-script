@@ -429,6 +429,7 @@ Table.prototype.distinct = function(field) {
   for (var i = 0; i < this.items.length; i++) {
     list.push(this.items[i].getFieldValue(field));
   }
+  // It filters the list to return an array with the unique values
   var unique = list.filter(function(value, index, self) { 
     return self.indexOf(value) === index;
   });
