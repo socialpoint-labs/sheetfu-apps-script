@@ -6,14 +6,15 @@
  * @constructor
  */
 function Item(i, header, row, column, sheet) {
-  this.i = i;
-  this.header = header;
-  
-  this.tableRow = row;
-  this.tableColumn = column;
-  this.tableSheet = sheet;
-
   this.fields = {};
+  
+  this.table = {};
+  this.table.header = header;
+  this.table.row = row;
+  this.table.column = column;
+  this.table.sheet = sheet;
+  
+  this.i = i;
   this.authorizedToCommit = true;
 }
 
@@ -41,7 +42,7 @@ Item.prototype.addField = function(label, value, note, background, formula, font
  */
 Item.prototype.commit = function () {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item. The order of the grid it is associated to has changed or it has been deleted."
   }
 
   var rowValues = [];
@@ -50,8 +51,8 @@ Item.prototype.commit = function () {
   var rowWraps = [];
   var rowFontColors = [];
 
-  for (var j = 0; j < this.header.length; j++) {
-    var field = this.header[j];
+  for (var j = 0; j < this.table.header.length; j++) {
+    var field = this.table.header[j];
     var value = this.getFieldValue(field);
     var formula = this.getFieldFormula(field);
 
@@ -76,13 +77,13 @@ Item.prototype.commit = function () {
  */
 Item.prototype.commitValues = function () {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item. The order of the grid it is associated to has changed or it has been deleted."
   }
 
   var rowValues = [];
 
-  for (var j = 0; j < this.header.length; j++) {
-    var field = this.header[j];
+  for (var j = 0; j < this.table.header.length; j++) {
+    var field = this.table.header[j];
     var value = this.getFieldValue(field);
     var formula = this.getFieldFormula(field);
 
@@ -102,8 +103,8 @@ Item.prototype.commitBackgrounds = function () {
     throw "Forbidden to commit this item. The order of the grid it is associated to has changed."
   }
   var rowBackgrounds = [];
-  for (var j = 0; j < this.header.length; j++) {
-    var field = this.header[j];
+  for (var j = 0; j < this.table.header.length; j++) {
+    var field = this.table.header[j];
     var background = this.getFieldBackground(field);
     rowBackgrounds.push(background)
   }
@@ -118,7 +119,7 @@ Item.prototype.commitBackgrounds = function () {
  */
 Item.prototype.commitField = function (field) {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed or it has been deleted."
   }
   var cellRange = this.getFieldRange(field);
   if (this.getFieldFormula(field)) {
@@ -140,7 +141,7 @@ Item.prototype.commitField = function (field) {
  */
 Item.prototype.commitFieldValue = function (field) {
   if (!(this.authorizedToCommit)) {
-    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed."
+    throw "Forbidden to commit this item field. The order of the grid it is associated to has changed or it has been deleted."
   }
   var cellRange = this.getFieldRange(field);
   if (this.getFieldFormula(field)) {
@@ -157,11 +158,11 @@ Item.prototype.commitFieldValue = function (field) {
  */
 Item.prototype.getLineRange = function () {
   var headerOffset = 1;
-  var rangePositionOffset = this.tableRow;
+  var rangePositionOffset = this.table.row;
   var row = this.i + headerOffset + rangePositionOffset;
-  var column = this.tableColumn;
-  var sheet = this.tableSheet;
-  return sheet.getRange(row, column, 1, this.header.length);
+  var column = this.table.column;
+  var sheet = this.table.sheet;
+  return sheet.getRange(row, column, 1, this.table.header.length);
 };
 
 
@@ -172,7 +173,7 @@ Item.prototype.getLineRange = function () {
  */
 Item.prototype.getFieldRange = function (field) {
   var columnIndexOffset = 1;    // columns starts at 1.
-  var columnField = this.header.indexOf(field) + columnIndexOffset;
+  var columnField = this.table.header.indexOf(field) + columnIndexOffset;
   return this.getLineRange().getCell(1, columnField);
 };
 
@@ -250,8 +251,8 @@ Item.prototype.setFieldBackground = function(field, background) {
  * @param {String} color: The name or hex of the color.
  */
 Item.prototype.setBackground = function(color) {
-  for (var i = 0; i < this.header.length; i++) {
-    var field = this.header[i];
+  for (var i = 0; i < this.table.header.length; i++) {
+    var field = this.table.header[i];
     this.fields[field]["background"] = color;
   }
   return this;
@@ -303,7 +304,7 @@ Item.prototype.setFieldFontColor = function(field, fontColor) {
  * @return {Range} the cell range of the field.
  */
 Item.prototype.getFieldRange = function(field) {
-  var fieldIndex = this.header.indexOf(field);
+  var fieldIndex = this.table.header.indexOf(field);
   return this.getLineRange().getCell(1, fieldIndex + 1);
 };
 
