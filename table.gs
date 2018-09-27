@@ -488,14 +488,30 @@ Table.prototype.clearBackgrounds = function () {
 Table.prototype.getItemById = function (valueId) {
   return this.index[valueId]
 };
+ 
 
-
-/**
+/**  
  * Vertical lookup. Searches down the index field of a table (assuming an index field was given when creating the table)
  * for a criteria and returns the value of a specified field in the item found.
  */
 Table.prototype.getFieldValueById = function (field, valueId) {
   return (this.getItemById(valueId)).getFieldValue(field);
+}
+
+
+/**
+ * Method to return only distinct different values in a field.
+ */
+Table.prototype.distinct = function(field) {
+  var list = [];
+  for (var i = 0; i < this.items.length; i++) {
+    list.push(this.items[i].getFieldValue(field));
+  }
+  // It filters the list to return an array with the unique values
+  var unique = list.filter(function(value, index, self) { 
+    return self.indexOf(value) === index;
+  });
+  return unique
 }
 
 
