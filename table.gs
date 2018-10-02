@@ -28,7 +28,7 @@ function getTableByName(namedRange, indexField) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var tableRange = ss.getRangeByName(namedRange);
   if (tableRange == null) {
-    throw 'Oops! Error creating a table with the named range '+namedRange+'. It might not exist or it is misspelled'
+    throw 'Oops! Error creating a table with the named range '+namedRange+'. It might not exist or it is misspelled.'
   }
   return new Table(tableRange, indexField);
 }
