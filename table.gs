@@ -498,7 +498,12 @@ Table.prototype.getItemById = function (valueId) {
  * for a criteria and returns the value of a specified field in the item found.
  */
 Table.prototype.getFieldValueById = function (field, valueId) {
-  return (this.getItemById(valueId)).getFieldValue(field);
+  var itemById = this.getItemById(valueId);
+  if(itemById) {
+    return itemById.getFieldValue(field);
+  } else {
+    return undefined;
+  }
 }
 
 
