@@ -237,33 +237,14 @@ Table.prototype.getGridValues = function() {
 
 /**
  * Method to query rows from a Table, given exact match attributes.
- * @return {object} filteredObject: Object with key/value pair filtered (exact match).
+ * @param {Array} criteria: an array used as filter as an AND of ORs (see CNF).
+ * @return {Item[]} List of Item objects matching the given criteria.
  */
-Table.prototype.select = function(filterObject) {
-  var queryItems = new GridArray();
-
-  for (var i = 0; i < this.items.length; i++) {
-
-    var currentRow = this.items[i];
-    var matching = true;
-
-    for (var label in filterObject) {
-      if (currentRow.getFieldValue(label) instanceof Date) {
-        if(currentRow.getFieldValue(label).getTime() !== filterObject[label].getTime()) {
-          matching = false;
-          break;
-        }
-      } else {
-        if (currentRow.getFieldValue(label) !== filterObject[label]) {
-          matching = false;
-          break;
-        }
-      }
-    }
-    if (matching === true) {
-      queryItems.push(currentRow);
-    }
-  }
+Table.prototype.select = function(criteria) {
+  var queryItems = new Selector(this, criteria)
+  .evaluate()
+  .getQueryItems();
+  
   return queryItems;
 };
 
