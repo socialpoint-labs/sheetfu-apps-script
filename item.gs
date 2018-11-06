@@ -36,22 +36,6 @@ Item.prototype.addField = function(label, value, note, background, formula, font
   }
 };
 
-
-/**
- * Method to convert the item into a JS object, with its attributes being the header fields of the item.
- * @return {Object} itemObject: The object with each of the header/fieldValue pairs of the item.
- */
-Item.prototype.toObject = function() {
-  var itemObject = {};
-  var self = this; // Needed because inside the forEach function, "this" is actually the list that is being looped through
-  this.table.header.forEach( function(headerField) { 
-    var fieldValue = self.getFieldValue(headerField);
-    itemObject[headerField] = fieldValue;
-  });
-  return itemObject;
-};
-
-
 /**
  * Commit a single item line in spreadsheet if the items order has not been changed since instantiating the grid.
  */

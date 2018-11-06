@@ -372,9 +372,18 @@ Table.prototype.getHeaderRange = function() {
 
 /**
  * Method to add a new item into the Table. Add the item also to index if there is an index.
- * @param {object} raw_item: an object item containing only values. Field must be matching header values.
+ * @param {object} input_item: an object item containing only values, or an instance of Item. Field must be matching header values.
  */
-Table.prototype.add = function(raw_item) { 
+Table.prototype.add = function(input_item) { 
+  
+  var raw_item = input_item;
+  if(input_item instanceof Item) {
+    raw_item = {}
+    for (var field in input_item.fields) { 
+      raw_item[field] = input_item.getFieldValue(field); 
+    }
+  }
+  
   var newItem = new Item(this.items.length, this.header, this.gridRange.getRow(), this.gridRange.getColumn(), this.gridRange.getSheet());
 
   for (var i = 0; i < this.header.length; i++) {
