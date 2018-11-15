@@ -417,9 +417,11 @@ Table.prototype.sortBy = function(key, ascending) {
 
   this.items.sort(function(a, b){
 
-    if (a.getFieldValue(key) instanceof Date) {
-      var keyA = a.getFieldValue(key).getTime();
-      var keyB = b.getFieldValue(key).getTime();
+    if (!isNaN(Date.parse(a.getFieldValue(key))) && !isNaN(Date.parse(b.getFieldValue(key)))) {
+      var dateA = new Date(a.getFieldValue(key));
+      var keyA = dateA.valueOf();
+      var dateB = new Date(b.getFieldValue(key));
+      var keyB = dateB.valueOf();
 
     } else {
       var keyA = a.getFieldValue(key);
