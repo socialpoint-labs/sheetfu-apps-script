@@ -36,7 +36,6 @@ Item.prototype.addField = function(label, value, note, background, formula, font
   }
 };
 
-
 /**
  * Commit a single item line in spreadsheet if the items order has not been changed since instantiating the grid.
  */
