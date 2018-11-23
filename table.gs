@@ -416,7 +416,9 @@ Table.prototype.add = function(input_item) {
 Table.prototype.sortBy = function(key, ascending) {
 
   this.items.sort(function(a, b) {
-    if (!isNaN(Date.parse(a.getFieldValue(key))) && !isNaN(Date.parse(b.getFieldValue(key)))) {
+    var timeStampA = Date.parse(a.getFieldValue(key));
+    var timeStampB = Date.parse(b.getFieldValue(key));
+    if (!isNaN(timeStampA) && !isNaN(timeStampB)) {
       var dateA = new Date(a.getFieldValue(key));
       var keyA = dateA.getTime();
       var dateB = new Date(b.getFieldValue(key));
