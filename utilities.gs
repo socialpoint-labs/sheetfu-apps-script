@@ -72,3 +72,6 @@ Array.prototype.binaryIndexOf = function(searchElement, columnIndex) {
   }
   return -1;
 }
+
+
+
