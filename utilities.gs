@@ -58,7 +58,7 @@ Array.prototype.binaryIndexOf = function(searchElement, columnIndex) {
   
   while (minIndex <= maxIndex) {
     currentIndex = (minIndex + maxIndex) / 2 | 0;
-    currentElement = this[currentIndex][0];
+    currentElement = this[currentIndex][columnIndex];
     
     if (currentElement < searchElement) {
       minIndex = currentIndex + 1;
