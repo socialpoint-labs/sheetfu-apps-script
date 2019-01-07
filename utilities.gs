@@ -1,4 +1,17 @@
-function getItemValuesById(sheetName, headerRow, indexField, id, isSorted) {
+/**
+ * Use this function when you need to find item values in a table by index field.
+ * Unlike the original method getItemById, this function does not create a sheetfu table.
+ * It is a convenient alternative in large databases where the search performance is key.
+ * For example, look up a price of an automotive part by the part number.
+ *
+ * @param {String} sheetName: Name of the target sheet.
+ * @param {Number} headerRow: Row number where the header is.
+ * @param {String} indexField: Field name in header where you want to lookup the value.
+ * @param {*} lookupValue: Value you want to look up.
+ * @param {Boolean} isSorted: Whether the index field is sorted or not.
+ * @return {Object} An object item containing only values, where fields match the header values.
+ */
+function getItemValuesById(sheetName, headerRow, indexField, lookupValue, isSorted) {
   var sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   var numColumns = sheet.getLastColumn();
   var numRows = sheet.getLastRow();
@@ -6,7 +19,7 @@ function getItemValuesById(sheetName, headerRow, indexField, id, isSorted) {
   var idColumnIndex = header[0].indexOf(indexField) + 1;
   var ids = sheet.getRange(headerRow + 1, idColumnIndex, numRows - headerRow, 1).getValues();
   
-  var rowIndex = (isSorted)? ids.binaryIndexOf(id) : ids.indexOf2d(id);
+  var rowIndex = (isSorted)? ids.binaryIndexOf(lookupValue) : ids.indexOf2d(lookupValue);
   if (rowIndex === -1) {
     return undefined
   }
