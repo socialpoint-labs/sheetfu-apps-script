@@ -447,20 +447,6 @@ Table.prototype.sortBy = function(key, ascending) {
 
 
 /**
- * Method to set background color for a given item.
- * @param {object} item: An item object.
- * @param {string} color: The color we want as background.
- * @return {object} item: The mutated item.
- */
-Table.prototype.setItemBackground = function (item, color) {
-  for (var field in item.fields) {
-    item.setFieldBackground(field, color);
-  }
-  return item;
-};
-
-
-/**
  * Method to clear background colors on every items.
  * @return {Range}: The range of items which had their background cleaned. {Undefined} if the items range is empty.
  */
