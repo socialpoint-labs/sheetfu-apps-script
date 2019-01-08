@@ -186,7 +186,8 @@ Item.prototype.getFieldValue = function(field) {
   try {
     var value = this.fields[field]["value"];
   } catch(e) {
-    var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
+    var error = e + " field '" + field + 
+        "' cannot be found in the Table. Check if the field exists, it's properly written and it's included in the Table range.";
     throw error;
   }
   return value;
@@ -203,7 +204,8 @@ Item.prototype.setFieldValue = function(field, value) {
     this.fields[field]["value"] = value;
     this.fields[field]["formula"] = '';
   } catch(e) {
-    var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
+    var error = e + " field '" + field + 
+        "' cannot be found in the Table. Check if the field exists, it's properly written and it's included in the Table range.";
     throw error;
   }
   return this;
