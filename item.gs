@@ -199,8 +199,13 @@ Item.prototype.getFieldValue = function(field) {
  * @param {String|Number|Date} value: The value to set.
  */
 Item.prototype.setFieldValue = function(field, value) {
-  this.fields[field]["value"] = value;
-  this.fields[field]["formula"] = '';
+  try {
+    this.fields[field]["value"] = value;
+    this.fields[field]["formula"] = '';
+  } catch(e) {
+    var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
+    throw error;
+  }
   return this;
 };
 
