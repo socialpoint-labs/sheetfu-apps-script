@@ -183,13 +183,14 @@ Item.prototype.getFieldRange = function (field) {
  * @param {String} field: The name of the field.
  */
 Item.prototype.getFieldValue = function(field) {
-  try {
-    var value = this.fields[field]["value"];
-  } catch(e) {
-    var error = e + " field '" + field + "' may be wrong. Check your that your field is right.";
-    throw error;
+  var fieldParams = this.fields[field];
+  if(!fieldParams) {
+    var error = "The field '" + field + 
+        "' cannot be found in the Table located in '"+ this.table.sheet.getSheetName() +
+        "' sheet.\nCheck if the field exists, it's properly written and it's included in the Table range.";
+    throw error;  
   }
-  return value;
+  return fieldParams["value"];
 };
 
 
@@ -199,6 +200,12 @@ Item.prototype.getFieldValue = function(field) {
  * @param {String|Number|Date} value: The value to set.
  */
 Item.prototype.setFieldValue = function(field, value) {
+  if(!this.fields[field]) {    
+    var error = "The field '" + field + 
+        "' cannot be found in the Table located in '"+ this.table.sheet.getSheetName() +
+        "' sheet.\nCheck if the field exists, it's properly written and it's included in the Table range.";
+    throw error;
+  }
   this.fields[field]["value"] = value;
   this.fields[field]["formula"] = '';
   return this;
