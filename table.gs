@@ -415,12 +415,14 @@ Table.prototype.add = function(input_item) {
  */
 Table.prototype.sortBy = function(key, ascending) {
 
-  this.items.sort(function(a, b){
-
-    if (a.getFieldValue(key) instanceof Date) {
-      var keyA = a.getFieldValue(key).getTime();
-      var keyB = b.getFieldValue(key).getTime();
-
+  this.items.sort(function(a, b) {
+    var timeStampA = Date.parse(a.getFieldValue(key));
+    var timeStampB = Date.parse(b.getFieldValue(key));
+    if (!isNaN(timeStampA) && !isNaN(timeStampB)) {
+      var dateA = new Date(a.getFieldValue(key));
+      var keyA = dateA.getTime();
+      var dateB = new Date(b.getFieldValue(key));
+      var keyB = dateB.getTime();
     } else {
       var keyA = a.getFieldValue(key);
       var keyB = b.getFieldValue(key);
