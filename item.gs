@@ -37,6 +37,19 @@ Item.prototype.addField = function(label, value, note, background, formula, font
 };
 
 /**
+ * Method to convert the item into a JS object, with its attributes being the header fields of the item.
+ * @return {Object} itemObject: The object with each of the header/fieldValue pairs of the item.
+ */
+Item.prototype.toObject = function() {
+  var self = this;
+  return this.table.header.reduce( function(acc, headerField) {
+    var fieldValue = self.getFieldValue(headerField);
+    acc[headerField] = fieldValue;
+    return acc;
+  }, {});
+};
+
+/**
  * Commit a single item line in spreadsheet if the items order has not been changed since instantiating the grid.
  */
 Item.prototype.commit = function () {
@@ -260,6 +273,19 @@ Item.prototype.setBackground = function(color) {
   for (var i = 0; i < this.table.header.length; i++) {
     var field = this.table.header[i];
     this.fields[field]["background"] = color;
+  }
+  return this;
+};
+
+
+/**
+ * Method to set font color on the whole item.
+ * @param {String} color: The name or hex of the color.
+ */
+Item.prototype.setFontColor = function(color) {
+  for (var i = 0; i < this.table.header.length; i++) {
+    var field = this.table.header[i];
+    this.fields[field]["font"] = color;
   }
   return this;
 };
